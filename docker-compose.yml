@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: prospectbdapprovaldesk-postgres
+    environment:
+      POSTGRES_DB: ProspectbdApprovalDeskDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "55432:5432"
+    volumes:
+      - prospectbdapprovaldesk_pgdata:/var/lib/postgresql/data
+
+volumes:
+  prospectbdapprovaldesk_pgdata:
+
