@@ -1,5 +1,5 @@
 services:
-  api:
+  approval-desk-backend:
     image: prospectbdapprovaldesk-api:latest
     build:
       context: .
