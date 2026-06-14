@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: prospectbdapprovaldesk-postgres
+    environment:
+      POSTGRES_DB: ProspectbdApprovalDeskDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "55432:5432"
+    volumes:
+      - prospectbdapprovaldesk_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ProspectbdApprovalDeskDb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  api:
+    ports:
+      - "5096:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+  frontend:
+    ports:
+      - "5173:80"
+    depends_on:
+      - api

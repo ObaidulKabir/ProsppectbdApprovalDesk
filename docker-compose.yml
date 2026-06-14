@@ -1,37 +1,23 @@
 services:
-  postgres:
-    image: postgres:16
-    container_name: prospectbdapprovaldesk-postgres
-    environment:
-      POSTGRES_DB: ProspectbdApprovalDeskDb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "55432:5432"
-    volumes:
-      - prospectbdapprovaldesk_pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d ProspectbdApprovalDeskDb"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
   api:
     image: prospectbdapprovaldesk-api:latest
     build:
       context: .
       dockerfile: src/ProspectbdApprovalDesk.Api/Dockerfile
     container_name: prospectbdapprovaldesk-api
-    ports:
-      - "5096:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ProspectbdApprovalDeskDb;Username=postgres;Password=postgres
-    depends_on:
-      postgres:
-        condition: service_healthy
 
-  frontend:
+    networks:
+      - traefik-network
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.approval-desk-frontend.rule=Host(`approval-desk.prospectbdltd.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.approval-desk-frontend.entrypoints=web"
+      - "traefik.http.services.approval-desk-frontend.loadbalancer.server.port=8080"
+  approval-desk-frontend:
     image: prospectbdapprovaldesk-frontend:latest
     build:
       context: ./frontend
@@ -39,10 +25,18 @@ services:
       args:
         - VITE_API_BASE_URL=http://localhost:5096
     container_name: prospectbdapprovaldesk-frontend
-    ports:
-      - "5173:80"
-    depends_on:
-      - api
+
+    networks:
+      - traefik-network
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.approval-desk-frontend.rule=Host(`approval-desk.prospectbdltd.com`)"
+      - "traefik.http.routers.approval-desk-frontend.entrypoints=web"
+      - "traefik.http.services.approval-desk-frontend.loadbalancer.server.port=80"
 
 volumes:
   prospectbdapprovaldesk_pgdata:
+networks:
+  traefik-network:
+    external: true
