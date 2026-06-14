@@ -11,7 +11,7 @@ services:
       - traefik-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.approval-desk-backend.rule=Host(`approval-desk.prospectbdltd.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.approval-desk-backend.rule=Host(`approval-desk.gkibria121.com`) && PathPrefix(`/api`)"
       - "traefik.http.routers.approval-desk-backend.entrypoints=web"
       - "traefik.http.services.approval-desk-backend.loadbalancer.server.port=8080"
 
@@ -21,14 +21,14 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_BASE_URL=https://approval-desk.prospectbdltd.com
+        - VITE_API_BASE_URL=https://approval-desk.gkibria121.com
     networks:
       - traefik-network
     depends_on:
       - approval-desk-backend
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.approval-desk-frontend.rule=Host(`approval-desk.prospectbdltd.com`)"
+      - "traefik.http.routers.approval-desk-frontend.rule=Host(`approval-desk.gkibria121.com`)"
       - "traefik.http.routers.approval-desk-frontend.entrypoints=web"
       - "traefik.http.services.approval-desk-frontend.loadbalancer.server.port=80"
 
