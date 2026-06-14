@@ -6,7 +6,7 @@ services:
       dockerfile: src/ProspectbdApprovalDesk.Api/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ProspectbdApprovalDeskDb;Username=root;Password=toor
+      - ConnectionStrings__DefaultConnection=Host=192.168.0.103;Port=5432;Database=ProspectbdApprovalDeskDb;Username=root;Password=toor
     networks:
       - traefik-network
     labels:
