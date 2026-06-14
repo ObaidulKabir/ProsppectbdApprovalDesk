@@ -10,7 +10,39 @@ services:
       - "55432:5432"
     volumes:
       - prospectbdapprovaldesk_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ProspectbdApprovalDeskDb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    image: prospectbdapprovaldesk-api:latest
+    build:
+      context: .
+      dockerfile: src/ProspectbdApprovalDesk.Api/Dockerfile
+    container_name: prospectbdapprovaldesk-api
+    ports:
+      - "5096:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ProspectbdApprovalDeskDb;Username=postgres;Password=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    image: prospectbdapprovaldesk-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=http://localhost:5096
+    container_name: prospectbdapprovaldesk-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
 
 volumes:
   prospectbdapprovaldesk_pgdata:
-
