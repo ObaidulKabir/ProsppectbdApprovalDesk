@@ -21,7 +21,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_BASE_URL=http://approval-desk.prospectbdltd.com
+        - VITE_API_BASE_URL=https://approval-desk.prospectbdltd.com
     networks:
       - traefik-network
     depends_on:
