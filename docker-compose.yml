@@ -14,9 +14,9 @@ services:
 
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.approval-desk-frontend.rule=Host(`approval-desk.prospectbdltd.com`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.approval-desk-frontend.entrypoints=web"
-      - "traefik.http.services.approval-desk-frontend.loadbalancer.server.port=8080"
+      - "traefik.http.routers.approval-desk-backend.rule=Host(`approval-desk.prospectbdltd.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.approval-desk-backend.entrypoints=web"
+      - "traefik.http.services.approval-desk-backend.loadbalancer.server.port=8080"
   approval-desk-frontend:
     image: prospectbdapprovaldesk-frontend:latest
     build:
