@@ -15,12 +15,18 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
   api:
     ports:
       - "5096:8080"
     depends_on:
       postgres:
         condition: service_healthy
+
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=postgres
+
   frontend:
     ports:
       - "5173:80"
