@@ -6,27 +6,26 @@ services:
       dockerfile: src/ProspectbdApprovalDesk.Api/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ProspectbdApprovalDeskDb;Username=postgres;Password=postgres
-
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ProspectbdApprovalDeskDb;Username=root;Password=toor
     networks:
       - traefik-network
-
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.approval-desk-backend.rule=Host(`approval-desk.prospectbdltd.com`) && PathPrefix(`/api`)"
       - "traefik.http.routers.approval-desk-backend.entrypoints=web"
       - "traefik.http.services.approval-desk-backend.loadbalancer.server.port=8080"
+
   approval-desk-frontend:
     image: prospectbdapprovaldesk-frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_BASE_URL=http://localhost:5096
-
+        - VITE_API_BASE_URL=http://approval-desk.prospectbdltd.com
     networks:
       - traefik-network
-
+    depends_on:
+      - approval-desk-backend
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.approval-desk-frontend.rule=Host(`approval-desk.prospectbdltd.com`)"
@@ -35,6 +34,7 @@ services:
 
 volumes:
   prospectbdapprovaldesk_pgdata:
+
 networks:
   traefik-network:
     external: true
